@@ -15,12 +15,12 @@ class ScheduleController extends Controller
 
     //ログイン中のユーザーに紐づくスケジュールを取得
     $schedules = $user->schedules()
-        ->orderBy('date', 'desx')
+        ->orderBy('date', 'desc')
         ->get();
 
     //取得したスケジュールを画面に渡す
     return view('schedules.index',[
-        'schedules'=> schedules
+        'schedules'=> $schedules
     ]);
     }
 }
