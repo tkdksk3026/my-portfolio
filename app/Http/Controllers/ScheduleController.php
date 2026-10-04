@@ -4,20 +4,23 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+//一覧画面：練習スケジュールおを取得して画面に渡す
 class ScheduleController extends Controller
 {
-    // Route::get('schedules',[ScheduleController::class, index])->name('schedules.index')->middleware('auth');
-    // Route::post('schedules',[ScheduleController::class, store])->name('schedules,store')->middleware('auth');
-    // Route::get('schedules/{schedule}',[ScheduleController::class, show])->name('schedules,show')->middleware('auth');
-    // Route::delete('schedules/{schedule}',[scheduleController::class,destroy])->name('schedules,destroy,destroy')->middleware('auth');
     
-    Route::middleware('[auth]')->group(function(){
+    public function index()
+    {
+    //ログイン中のユーザー情報を取得
+    $user = auth()->user();
 
-        Route::resource('schedules',ScheduleController::class)->only([
-            'index','store','show','destroy'
+    //ログイン中のユーザーに紐づくスケジュールを取得
+    $schedules = $user->schedules()
+        ->orderBy('date', 'desx')
+        ->get();
 
-        ]);
-    });
-
-
+    //取得したスケジュールを画面に渡す
+    return view('schedules.index',[
+        'schedules'=> schedules
+    ]);
+    }
 }
