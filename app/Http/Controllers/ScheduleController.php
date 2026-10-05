@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Schedule;
 
 //一覧画面：練習スケジュールおを取得して画面に渡す
 class ScheduleController extends Controller
@@ -37,7 +38,7 @@ class ScheduleController extends Controller
         auth()->user()->schedules()->create([
             'title' => $request->title,
             'date' => $request->date,
-            'start_time' => $requset->start_time,
+            'start_time' => $request->start_time,
 
         ]);
 
