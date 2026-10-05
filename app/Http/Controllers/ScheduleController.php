@@ -23,4 +23,42 @@ class ScheduleController extends Controller
         'schedules'=> $schedules
     ]);
     }
+
+        // 新しい練習スケジュールをデータベースに保存する
+    public function store(Request $request)
+    {
+        //入力バリデーション
+        $request->validate([
+            'title' => 'required|string|max:255', //必須・文字列
+            'date' => 'required|date', //必須・日付
+            'start_time' => 'required', //必須
+    ]);
+        //ログインユーザーに紐づけてDBへ登録
+        auth()->user()->schedules()->create([
+            'title' => $request->title,
+            'date' => $request->date,
+            'start_time' => $requset->start_time,
+
+        ]);
+
+        //保存が完了したらスケジュール一覧画面へリダイレクト
+        return redirect()->route('schedules.index');
+    
+    }
+
+    public function destroy(Schedule $schedule)
+    {
+        //セキュリティチェック(他人のスケジュール削除した場合拒否する)
+        if($schedule->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        //データベースから削除
+        $schedule->delete();
+
+        //削除が完了したらスケジュール一覧画面へリダイレクト
+        return redirect()->route('schedules.index');
+
+    }
+
 }
