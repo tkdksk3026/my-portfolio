@@ -46,6 +46,19 @@ class ScheduleController extends Controller
         return redirect()->route('schedules.index');
     
     }
+    
+    public function show(Schedule $schedule)
+    {
+        //セキュリティチェック
+        if($schedule->user_id !== auth()->id()){
+            abort(403);
+
+        }
+        //ビューに選択されたスケジュールデータを渡す
+        return view('schedules.show',[
+            'schedule' => $schedule
+        ]);
+    }
 
     public function destroy(Schedule $schedule)
     {
