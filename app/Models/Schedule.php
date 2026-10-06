@@ -10,7 +10,7 @@ class Schedule extends Model
     protected $fillable = [
         'user_id',
         'title',
-        'data',
+        'date',
         'start_time',
     
 ];
