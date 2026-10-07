@@ -57,6 +57,10 @@ public function getEndTimeAttribute()
         return null;
     }
     //Carbonを使って開始時間に合計分数を足して終了予定時刻を計算する
+    //Carbon::parse($this->start_time)で開始時間をCarbonインスタンスに変換する
+    //addMinutes($this->total_minutes)で合計分数を足す
+    //format('H:i')で時:分の形式に変換する
     return Carbon::parse($this->start_time)->addMinutes($this->total_minutes)->format('H:i');
 }
+
 }
