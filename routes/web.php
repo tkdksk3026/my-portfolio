@@ -29,7 +29,7 @@ Route::middleware('auth')->group(function () {
 
         ]);
 
-    Route::post('schedules/{schedule}/menu-itemes',[MenuItemController::class, 'store'])->name('menu-itemes.store');
+    Route::post('schedules/{schedule}/menu_items',[MenuItemController::class, 'store'])->name('menu_items.store');
 
     });
 
