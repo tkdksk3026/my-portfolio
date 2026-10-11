@@ -22,16 +22,20 @@
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label for="date" class="block text-sm font-medium text-gray-700">練習日</label>
                             <input type="date" name="date" id="date" required 
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         </div>
-
                         <div>
                             <label for="start_time" class="block text-sm font-medium text-gray-700">開始時間</label>
                             <input type="time" name="start_time" id="start_time" required 
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label for="end_time" class="block text-sm font-medium text-gray-700">終了時間</label>
+                            <input type="time" name="end_time" id="end_time" required 
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         </div>
                     </div>
@@ -53,29 +57,32 @@
                     <p class="text-gray-500">登録されている練習予定はありません。</p>
                 @else
                     <div class="space-y-4">
-                        @foreach($schedules as $schedule)
-                            <div class="p-4 border rounded-lg flex items-center justify-between hover:bg-gray-50">
-                                <div>
-                                    <div class="text-xs text-gray-500 mb-1">
-                                        📅 {{ $schedule->date }} ⏰ {{ \Carbon\Carbon::parse($schedule->start_time)->format('H:i') }} 開始
-                                   </div>
-                                   
-                                        <a href="{{ route('schedules.show', $schedule) }}" class="text-lg font-bold text-indigo-600 hover:underline">
-                                           {{ $schedule->title }}
-                                            </a>
-                                    </div>
+                       @foreach($schedules as $schedule)
+                            <!-- 👇 flex をやめて、通常のブロック配置＆パディングや高さを整える -->
+                            <div class="p-4 border rounded-lg hover:bg-gray-50 space-y-3">
+                                
+                                <!-- 上段：日時（日付と時間） -->
+                                <div class="text-base text-gray-500">
+                                    📅 {{ \Illuminate\Support\Str::limit($schedule->date, 10, '') }} 
+                                    ⏰ {{ \Carbon\Carbon::parse($schedule->start_time)->format('H:i') }} ～ {{ \Carbon\Carbon::parse($schedule->end_time)->format('H:i') }}
                                 </div>
+                                
+                                <!-- 中段：タイトル ＆ 右側の削除ボタンを綺麗に並べるためのレイアウト -->
+                                <div class="flex items-center justify-between">
+                                    <a href="{{ route('schedules.show', $schedule) }}" class="text-xl font-bold text-indigo-600 hover:underline">
+                                        {{ $schedule->title }}
+                                    </a>
 
-                                <div>
-                                    <!-- 削除フォーム（destroy メソッドへ DELETE リクエストを送信） -->
+                                    <!-- 削除ボタン -->
                                     <form method="POST" action="{{ route('schedules.destroy', $schedule) }}" onsubmit="return confirm('本当にこのスケジュールを削除しますか？');">
                                         @csrf
-                                        @method('DELETE') {{-- DELETEリクエストに疑似変換（必須） --}}
+                                        @method('DELETE')
                                         <button type="submit" class="px-3 py-1 bg-red-600 text-white text-sm font-medium rounded hover:bg-red-500">
                                             削除
                                         </button>
                                     </form>
                                 </div>
+
                             </div>
                         @endforeach
 

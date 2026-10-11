@@ -13,8 +13,17 @@ class Schedule extends Model
         'title',
         'date',
         'start_time',
+        'end_time',
     
-];
+];  
+
+//日付と時刻をCarbonインスタンスに変換する
+    protected $casts = [
+        'date' => 'date',
+        'start_time' => 'datetime',
+        'end_time' => 'datetime',
+    ];
+
 
 //リレーション：このスケジュールを作ったユーザー
 public function user()
@@ -46,21 +55,6 @@ public function getCompletedMinutesAttribute()
 {
     //完了済みメニューの合計時間を取得する
     return $this->menuItems->where('is_completed', true)->sum('duration_minutes');
-}
-
-//終了予定時刻(開始時間+合計分数）
-//$schedule->end_timeで取得できるようにする
-public function getEndTimeAttribute()
-{
-    //開始時間がnullの場合はnullを返す
-    if(!$this->start_time){
-        return null;
-    }
-    //Carbonを使って開始時間に合計分数を足して終了予定時刻を計算する
-    //Carbon::parse($this->start_time)で開始時間をCarbonインスタンスに変換する
-    //addMinutes($this->total_minutes)で合計分数を足す
-    //format('H:i')で時:分の形式に変換する
-    return Carbon::parse($this->start_time)->addMinutes($this->total_minutes)->format('H:i');
 }
 
 }
