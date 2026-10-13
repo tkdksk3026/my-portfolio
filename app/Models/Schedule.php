@@ -33,11 +33,11 @@ public function user()
 
 }
 
-//リレーション：このスケジュールに含まれる練習メニュー一覧
+
 public function menuItems()
 {
-    
-    return $this->hasMany(MenuItem::class);
+    //メニューアイテムを取得する際に、sort_orderでソートして取得する
+    return $this->hasMany(MenuItem::class)->orderBy('sort_order');
 }
 
 //全メニューの合計時間(単位：分）
@@ -56,5 +56,6 @@ public function getCompletedMinutesAttribute()
     //完了済みメニューの合計時間を取得する
     return $this->menuItems->where('is_completed', true)->sum('duration_minutes');
 }
+
 
 }
