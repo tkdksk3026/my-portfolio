@@ -5,7 +5,7 @@
                 {{ $schedule->title }} （{{ $schedule->date->format('Y/m/d') }}）
             </h2>
             <a href="{{ route('schedules.index') }}" class="text-sm text-gray-600 hover:text-gray-900 underline">
-                ← 一覧に戻る
+                一覧に戻る
             </a>
         </div>
     </x-slot>

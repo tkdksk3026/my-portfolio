@@ -24,7 +24,7 @@ class MenuItemController extends Controller
         if(($currentTotal + $newFuration) > $maxLimit){
             return back()
             ->withInput()
-            ->withErrors(['duration_minutes' => '予定時間('.$maxLimit .'分)を超えてしまいます!(残り枠: ' . $schedule->remaining_minutes . '分)']);
+            ->withErrors(['duration_minutes' => '予定時間('.$maxLimit .'分)を超えてしまいます!(残り枠: ' . $schedule->available_minutes . '分)']);
 
     }
 
