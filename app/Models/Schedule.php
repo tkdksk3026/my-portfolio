@@ -71,7 +71,7 @@ public function getCompletedMinutesAttribute()
 
 }
 
- public function getTotalScheduleMinutesAttribute()
+     public function getTotalScheduleMinutesAttribute()
  {
     if($this->start_time && $this->end_time){
 
@@ -82,10 +82,15 @@ public function getCompletedMinutesAttribute()
     }
     return 0 ;
  }
-        
+    
+   public function getAvailableMinutesAttribute()
+   {
+    return max(0, $this->total_schedule_minutes - $this->total_minutes);
+
+   }
+
     public function getRemainingMinutesAttribute()
 {
-    
 
     return $this->total_minutes - $this->completed_minutes;
 }
