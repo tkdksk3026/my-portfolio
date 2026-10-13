@@ -58,4 +58,38 @@ public function getCompletedMinutesAttribute()
 }
 
 
+ public function getAllocatbleMinutesAttribute()
+{
+        //スケジュールの開始時間と終了時間が設定されている場合にのみ、差分を計算する
+        if( $this->start_time && $this->end_time){
+            //
+            return $this->start_time->diffInMinutes($this->end_time);
+
+        }
+       
+        return 0;
+
+}
+
+ public function getTotalScheduleMinutesAttribute()
+ {
+    if($this->start_time && $this->end_time){
+
+        $start = Carbon::parse($this->start_time)->setDate(2026,1,1);
+        $end = Carbon::parse($this->end_time)->setDate(2026,1,1);
+
+        return $start->diffInMinutes($end);
+    }
+    return 0 ;
+ }
+        
+    public function getRemainingMinutesAttribute()
+{
+    
+
+    return $this->total_minutes - $this->completed_minutes;
+}
+
+
+
 }

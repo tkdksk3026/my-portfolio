@@ -25,13 +25,12 @@ Route::middleware('auth')->group(function () {
     // Route::delete('schedules/{schedule}',[ScheduleController::class,'destroy'])->name('schedules.destroy')->middleware('auth');
 
     Route::resource('schedules', ScheduleController::class)->only(['index','store','show','destroy' ]);
-
+    Route::delete('/menu_items/{menuItem}', [MenuItemController::class, 'destroy'])->name('menu_items.destroy');
     Route::post('schedules/{schedule}/menu_items',[MenuItemController::class, 'store'])->name('menu_items.store');
-
     Route::patch('/menu_items/{menuItem}/move-up', [MenuItemController::class, 'moveUp'])->name('menu_items.moveUp');
     Route::patch('/menu_items/{menuItem}/move-down', [MenuItemController::class,'moveDown'])->name('menu_items.moveDown');
-
-    Route::delete('/menu_items/{menuItem}', [MenuItemController::class, 'destroy'])->name('menu_items.destroy');
+    Route::patch('/menu_items/{menuItem}/toggle',  [MenuItemController::class, 'toggle'])->name('menu_items.toggle');
+    
 
     });
 
