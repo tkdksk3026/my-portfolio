@@ -30,10 +30,12 @@
                     <div class="bg-blue-50 p-4 rounded-lg">
                         <span class="text-xs text-gray-500 block">終了時刻</span>
                         <span class="text-xl font-bold text-blue-700">{{ $schedule->end_time ? $schedule->end_time->format('H:i') : '--:--' }}</span>
-                    </div>
+                    </div>              
                     <div class="bg-red-50 p-4 rounded-lg">
                         <span class="text-xs text-red-500 block">残り時間</span>
-                        <span class="text-xl font-bold text-red-500">{{ $schedule->total_minutes }} 分</span>
+                        <span class="text-xl font-bold {{ $schedule->remaining_minutes < 0 ? 'text-red-700' : 'text-red-500' }}">
+                            {{ $schedule->remaining_minutes }} 分
+                        </span>
                     </div>
                     <div class="bg-green-50 p-4 rounded-lg">
                         <span class="text-xs text-green-600 block">消化時間</span>
@@ -54,7 +56,7 @@
                         <!-- メニュー名 -->
                         <div>
                             <x-input-label for="name" value="メニュー名" />
-                            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name')" placeholder="例: パス練習, スパイク打ち" required />
+                            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name')" placeholder="例: パス , スパイク" required />
                             <x-input-error class="mt-2" :messages="$errors->get('name')" />
                         </div>
 
@@ -83,13 +85,19 @@
                         <div class="space-y-3">
                             @foreach ($schedule->menuItems as $item)
                                 <div class="flex items-center justify-between p-4 rounded-lg border {{ $item->is_completed ? 'bg-gray-50 border-gray-200' : 'bg-white border-gray-300 shadow-sm' }}">
-                                    <div class="flex items-center space-x-3">
-                                        <!-- ステータスアイコン（見た目のみ） -->
-                                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-semibold {{ $item->is_completed ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600' }}">
-                                            {{ $item->is_completed ? '✓' : '未' }}
-                                        </span>
+                             <div class="flex items-center space-x-3">
+                                        <!--  完了トグルボタン -->
+                                        <form action="{{ route('menu_items.toggle', $item) }}" method="POST">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="inline-flex items-center justify-center w-7 h-7 rounded-full text-xs font-semibold transition {{ $item->is_completed ? 'bg-green-100 text-green-800 hover:bg-green-200' : 'bg-gray-100 text-gray-600 hover:bg-gray-200' }}" title="完了/未完了を切り替え">
+                                                {{ $item->is_completed ? '✓' : '未' }}
+                                            </button>
+                                        </form>
+
+                                        <!-- メニュー名（完了している場合は打ち消し線を入れる） -->
                                         <div>
-                                            <p class="font-bold {{ $item->is_completed ? 'line-through text-gray-400' : 'text-gray-800' }}">
+                                            <p class="font-bold {{ $item->is_completed ? ' text-gray-400' : 'text-gray-800' }}">
                                                 {{ $item->name }}
                                             </p>
                                         </div>
@@ -117,7 +125,7 @@
                                                 </button>
                                             </form>
                                       </div>
-                                      <!-- 🗑️ 削除ボタン -->
+                                      <!--  削除ボタン -->
                                        <form action="{{ route('menu_items.destroy', $item) }}" method="POST" onsubmit="return confirm('このメニューを削除してもよろしいですか？');">
                                             @csrf
                                             @method('DELETE')

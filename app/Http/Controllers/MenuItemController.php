@@ -17,6 +17,18 @@ class MenuItemController extends Controller
             'duration_minutes' => 'required|integer|min:1|max:480',
         ]);
 
+        $maxLimit = $schedule->total_schedule_minutes;
+        $currentTotal = $schedule->total_minutes;
+        $newFuration = (int) $validated['duration_minutes'];
+
+        if(($currentTotal + $newFuration) > $maxLimit){
+            return back()
+            ->withInput()
+            ->withErrors(['duration_minutes' => '予定時間('.$maxLimit .'分)を超えてしまいます!(残り枠: ' . $schedule->remaining_minutes . '分)']);
+
+    }
+
+
         $maxSortOrder = $schedule->menuItems()->max('sort_order')?? 0;
 
         //リレーションを使って、紐づくスケジュールに練習アイテムを保存する
@@ -88,4 +100,17 @@ class MenuItemController extends Controller
             ->route('schedules.show', $scheduleId)
             ->with('status', '練習メニューを削除しました！');
     }
+
+    public function toggle(MenuItem $menuItem)
+    {
+        // メニューアイテムの完了状態を切り替える
+        $menuItem->is_completed = !$menuItem->is_completed;
+        // 変更を保存する
+        $menuItem->save();
+        // スケジュールの詳細ページにリダイレクトする
+        return redirect()->route('schedules.show', $menuItem->schedule_id);
+    }
+
+  
+
 }
