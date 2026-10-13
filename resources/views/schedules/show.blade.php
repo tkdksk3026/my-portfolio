@@ -99,6 +99,34 @@
                                         <span class="text-sm px-3 py-1 rounded-full bg-blue-50 text-blue-700 font-semibold">
                                             {{ $item->duration_minutes }} 分
                                         </span>
+                                        <div class="flex flex-col space-y-1">
+                                            <!-- 上へボタン -->
+                                            <form action="{{ route('menu_items.moveUp', $item) }}" method="POST">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="submit" class="p-1 text-gray-500 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 rounded text-xs leading-none" title="上へ">
+                                                    ▲
+                                                </button>
+                                            </form>
+                                            <!-- 下へボタン -->
+                                            <form action="{{ route('menu_items.moveDown', $item) }}" method="POST">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="submit" class="p-1 text-gray-500 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 rounded text-xs leading-none" title="下へ">
+                                                    ▼
+                                                </button>
+                                            </form>
+                                      </div>
+                                      <!-- 🗑️ 削除ボタン -->
+                                       <form action="{{ route('menu_items.destroy', $item) }}" method="POST" onsubmit="return confirm('このメニューを削除してもよろしいですか？');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="p-2 text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 rounded-lg transition" title="削除">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                </svg>
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                             @endforeach
