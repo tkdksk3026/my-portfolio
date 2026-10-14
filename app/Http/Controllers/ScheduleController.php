@@ -33,12 +33,14 @@ class ScheduleController extends Controller
             'title' => 'required|string|max:255', //必須・文字列
             'date' => 'required|date', //必須・日付
             'start_time' => 'required', //必須
+            'end_time' =>  'required', //必須
     ]);
         //ログインユーザーに紐づけてDBへ登録
         auth()->user()->schedules()->create([
             'title' => $request->title,
             'date' => $request->date,
             'start_time' => $request->start_time,
+            'end_time' => $request->end_time,
 
         ]);
 
@@ -52,6 +54,10 @@ class ScheduleController extends Controller
         //セキュリティチェック
         if($schedule->user_id !== auth()->id()){
             abort(403);
+
+        $schedule->load(['menuItems' =>function($query){
+            $query->orderBy('sort_order', 'asc');
+        }]);            
 
         }
         //ビューに選択されたスケジュールデータを渡す
@@ -75,4 +81,5 @@ class ScheduleController extends Controller
 
     }
 
+  
 }

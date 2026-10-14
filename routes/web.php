@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\MenuItemController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,10 +24,15 @@ Route::middleware('auth')->group(function () {
     // Route::get('schedules/{schedule}',[ScheduleController::class, 'show'])->name('schedules.show')->middleware('auth');
     // Route::delete('schedules/{schedule}',[ScheduleController::class,'destroy'])->name('schedules.destroy')->middleware('auth');
 
-    Route::resource('schedules', ScheduleController::class)->only([
-            'index','store','show','destroy'
+    Route::resource('schedules', ScheduleController::class)->only(['index','store','show','destroy' ]);
+    Route::delete('/menu_items/{menuItem}', [MenuItemController::class, 'destroy'])->name('menu_items.destroy');
+    Route::post('schedules/{schedule}/menu_items',[MenuItemController::class, 'store'])->name('menu_items.store');
+    Route::patch('/menu_items/{menuItem}/move-up', [MenuItemController::class, 'moveUp'])->name('menu_items.moveUp');
+    Route::patch('/menu_items/{menuItem}/move-down', [MenuItemController::class,'moveDown'])->name('menu_items.moveDown');
+    Route::patch('/menu_items/{menuItem}/toggle',  [MenuItemController::class, 'toggle'])->name('menu_items.toggle');
+    Route::post('/schedules/{schedule}/menu-items/reorder', [MenuItemController::class, 'reorder'])->name('menu-items.reorder');
 
-        ]);
     });
 
+    
     require __DIR__.'/auth.php';

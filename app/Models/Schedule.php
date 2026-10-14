@@ -13,8 +13,17 @@ class Schedule extends Model
         'title',
         'date',
         'start_time',
+        'end_time',
     
-];
+];  
+
+//日付と時刻をCarbonインスタンスに変換する
+    protected $casts = [
+        'date' => 'date',
+        'start_time' => 'datetime',
+        'end_time' => 'datetime',
+    ];
+
 
 //リレーション：このスケジュールを作ったユーザー
 public function user()
@@ -24,11 +33,11 @@ public function user()
 
 }
 
-//リレーション：このスケジュールに含まれる練習メニュー一覧
+
 public function menuItems()
 {
-    
-    return $this->hasMany(MenuItem::class);
+    //メニューアイテムを取得する際に、sort_orderでソートして取得する
+    return $this->hasMany(MenuItem::class)->orderBy('sort_order');
 }
 
 //全メニューの合計時間(単位：分）
@@ -48,19 +57,48 @@ public function getCompletedMinutesAttribute()
     return $this->menuItems->where('is_completed', true)->sum('duration_minutes');
 }
 
-//終了予定時刻(開始時間+合計分数）
-//$schedule->end_timeで取得できるようにする
-public function getEndTimeAttribute()
+
+ public function getAllocatbleMinutesAttribute()
 {
-    //開始時間がnullの場合はnullを返す
-    if(!$this->start_time){
-        return null;
-    }
-    //Carbonを使って開始時間に合計分数を足して終了予定時刻を計算する
-    //Carbon::parse($this->start_time)で開始時間をCarbonインスタンスに変換する
-    //addMinutes($this->total_minutes)で合計分数を足す
-    //format('H:i')で時:分の形式に変換する
-    return Carbon::parse($this->start_time)->addMinutes($this->total_minutes)->format('H:i');
+        //スケジュールの開始時間と終了時間が設定されている場合にのみ、差分を計算する
+        if( $this->start_time && $this->end_time){
+            //
+            return $this->start_time->diffInMinutes($this->end_time);
+
+        }
+       
+        return 0;
+
 }
+
+     public function getTotalScheduleMinutesAttribute()
+ {
+    if($this->start_time && $this->end_time){
+
+        $start = Carbon::parse($this->start_time)->setDate(2026,1,1);
+        $end = Carbon::parse($this->end_time)->setDate(2026,1,1);
+
+        return $start->diffInMinutes($end);
+    }
+    return 0 ;
+ }
+    
+   public function getAvailableMinutesAttribute()
+   {
+    return max(0, $this->total_schedule_minutes - $this->total_minutes);
+
+   }
+
+    public function getRemainingMinutesAttribute()
+{
+
+    return $this->total_minutes - $this->completed_minutes;
+}
+
+    public function menuItem()
+    {
+        return $this->hasMany(MenuItem::class)->orderBy('sort_order' , 'asc');
+    }
+
 
 }
