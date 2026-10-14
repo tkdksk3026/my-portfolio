@@ -82,9 +82,9 @@
                     @if ($schedule->menuItems->isEmpty())
                         <p class="text-gray-500 text-sm py-4 text-center">まだ練習メニューが登録されていません。<br>左のフォームから追加してください。</p>
                     @else
-                        <div class="space-y-3">
+                        <div id="sortable-menu" class="space-y-3">
                             @foreach ($schedule->menuItems as $item)
-                                <div class="flex items-center justify-between p-4 rounded-lg border {{ $item->is_completed ? 'bg-gray-50 border-gray-200' : 'bg-white border-gray-300 shadow-sm' }}">
+                                <div data-id="{{$item->id }}" class="flex items-center justify-between p-4 rounded-lg border transition-all duration-150 cursor-grab hover:bg-blue-50/50 hover:border-blue-300 hover:shadow-md {{ $item->is_completed ? 'bg-gray-50 border-gray-200' : 'bg-white border-gray-300 shadow-sm' }}">
                              <div class="flex items-center space-x-3">
                                         <!--  完了トグルボタン -->
                                         <form action="{{ route('menu_items.toggle', $item) }}" method="POST">
@@ -104,26 +104,11 @@
                                     </div>
 
                                     <div class="flex items-center space-x-2">
-                                        <span class="text-sm px-3 py-1 rounded-full bg-blue-50 text-blue-700 font-semibold">
+                                        <span class="text-base px-3 py-1 rounded-xl bg-blue-50 text-blue-700 font-semibold">
                                             {{ $item->duration_minutes }} 分
                                         </span>
                                         <div class="flex flex-col space-y-1">
-                                            <!-- 上へボタン -->
-                                            <form action="{{ route('menu_items.moveUp', $item) }}" method="POST">
-                                                @csrf
-                                                @method('PATCH')
-                                                <button type="submit" class="p-1 text-gray-500 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 rounded text-xs leading-none" title="上へ">
-                                                    ▲
-                                                </button>
-                                            </form>
-                                            <!-- 下へボタン -->
-                                            <form action="{{ route('menu_items.moveDown', $item) }}" method="POST">
-                                                @csrf
-                                                @method('PATCH')
-                                                <button type="submit" class="p-1 text-gray-500 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 rounded text-xs leading-none" title="下へ">
-                                                    ▼
-                                                </button>
-                                            </form>
+                                                                                                                             
                                       </div>
                                       <!--  削除ボタン -->
                                        <form action="{{ route('menu_items.destroy', $item) }}" method="POST" onsubmit="return confirm('このメニューを削除してもよろしいですか？');">
@@ -146,4 +131,47 @@
 
         </div>
     </div>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+<script>
+    // DOMContentLoadedを待ち受ける
+    document.addEventListener('DOMContentLoaded', function () {
+        var el = document.getElementById('sortable-menu');
+        
+        // 要素が存在するか確実にチェックする
+        if (!el) {
+            console.log('sortable-menu 要素が見つかりません（メニューが0件の可能性があります）');
+            return;
+        }
+
+        console.log('sortable-menu 要素を発見しました！Sortableを初期化します。');
+
+        Sortable.create(el, {
+            animation: 150,
+            onEnd: function (evt) {
+                var itemIds = [];
+                el.querySelectorAll('[data-id]').forEach(function (item) {
+                    itemIds.push(item.getAttribute('data-id'));                        
+                });
+
+                console.log('並び替え後のIDs:', itemIds);
+
+                fetch('{{ route("menu-items.reorder", $schedule) }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ ids: itemIds })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('並び順を非同期で保存しました', data);
+                })
+                .catch(error => {
+                    console.error('並び替えの保存に失敗しました', error);
+                });
+            } 
+        });
+    });
+</script>
 </x-app-layout>

@@ -55,6 +55,10 @@ class ScheduleController extends Controller
         if($schedule->user_id !== auth()->id()){
             abort(403);
 
+        $schedule->load(['menuItems' =>function($query){
+            $query->orderBy('sort_order', 'asc');
+        }]);            
+
         }
         //ビューに選択されたスケジュールデータを渡す
         return view('schedules.show',[
