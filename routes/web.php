@@ -30,7 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/menu_items/{menuItem}/move-up', [MenuItemController::class, 'moveUp'])->name('menu_items.moveUp');
     Route::patch('/menu_items/{menuItem}/move-down', [MenuItemController::class,'moveDown'])->name('menu_items.moveDown');
     Route::patch('/menu_items/{menuItem}/toggle',  [MenuItemController::class, 'toggle'])->name('menu_items.toggle');
-    
+    Route::post('/schedules/{schedule}/menu-items/reorder', [MenuItemController::class, 'reorder'])->name('menu-items.reorder');
 
     });
 

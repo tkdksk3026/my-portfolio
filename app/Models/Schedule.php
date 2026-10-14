@@ -95,6 +95,10 @@ public function getCompletedMinutesAttribute()
     return $this->total_minutes - $this->completed_minutes;
 }
 
+    public function menuItem()
+    {
+        return $this->hasMany(MenuItem::class)->orderBy('sort_order' , 'asc');
+    }
 
 
 }

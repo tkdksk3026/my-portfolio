@@ -111,6 +111,19 @@ class MenuItemController extends Controller
         return redirect()->route('schedules.show', $menuItem->schedule_id);
     }
 
-  
+
+    public function reorder (Request $requesst, Schedule $schedule)
+    {
+        $ids = $request->input('ids');
+        if($ids){
+            foreach($ids as $index => $id){
+                $schedule->menuItems()->where('id', $id)->update([
+                    'sort_order' => $index + 1
+
+                ]);
+            }
+        }
+        return response()->json(['success' => true ] );
+    }
 
 }
