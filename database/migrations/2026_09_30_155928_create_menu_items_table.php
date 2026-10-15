@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('menu_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('schedule_id')->constrained()->cascadeOnDelete(); //紐づくスケジュール
-            $table->string('name'); //メニュー名
-            $table->integer('duration_minutes'); //所要時間
-            $table->boolean('is_completed')->default(false); //完了チェック
-            $table->integer('sort_order')->default(0); //並び順
+            $table->foreignId('schedule_id')->constrained()->cascadeOnDelete(); // 紐づくスケジュール
+            $table->string('name'); // メニュー名
+            $table->integer('duration_minutes'); // 所要時間
+            $table->boolean('is_completed')->default(false); // 完了チェック
+            $table->integer('sort_order')->default(0); // 並び順
             $table->timestamps();
         });
     }

@@ -58,13 +58,13 @@
                 @else
                     <div class="space-y-4">
                        @foreach($schedules as $schedule)
-                            <!-- 👇 flex をやめて、通常のブロック配置＆パディングや高さを整える -->
+                            <!--  ブロック配置＆パディングや高さを整える -->
                             <div class="p-4 border rounded-lg hover:bg-gray-50 space-y-3">
                                 
                                 <!-- 上段：日時（日付と時間） -->
                                 <div class="text-base text-gray-500">
-                                    📅 {{ \Illuminate\Support\Str::limit($schedule->date, 10, '') }} 
-                                    ⏰ {{ \Carbon\Carbon::parse($schedule->start_time)->format('H:i') }} ～ {{ \Carbon\Carbon::parse($schedule->end_time)->format('H:i') }}
+                                     {{ \Illuminate\Support\Str::limit($schedule->date, 10, '') }} 
+                                     {{ \Carbon\Carbon::parse($schedule->start_time)->format('H:i') }} ～ {{ \Carbon\Carbon::parse($schedule->end_time)->format('H:i') }}
                                 </div>
                                 
                                 <!-- 中段：タイトル ＆ 右側の削除ボタンを綺麗に並べるためのレイアウト -->

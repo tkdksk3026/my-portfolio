@@ -2,40 +2,35 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Schedule;
+use Illuminate\Http\Request;
 
-//一覧画面：練習スケジュールおを取得して画面に渡す
 class ScheduleController extends Controller
 {
-    
     public function index()
     {
-    //ログイン中のユーザー情報を取得
-    $user = auth()->user();
 
-    //ログイン中のユーザーに紐づくスケジュールを取得
-    $schedules = $user->schedules()
-        ->orderBy('date', 'desc')
-        ->get();
+        $user = auth()->user();
 
-    //取得したスケジュールを画面に渡す
-    return view('schedules.index',[
-        'schedules'=> $schedules
-    ]);
+        $schedules = $user->schedules()
+            ->orderBy('date', 'desc')
+            ->get();
+
+        return view('schedules.index', [
+            'schedules' => $schedules,
+        ]);
     }
 
-        // 新しい練習スケジュールをデータベースに保存する
     public function store(Request $request)
     {
-        //入力バリデーション
+
         $request->validate([
-            'title' => 'required|string|max:255', //必須・文字列
-            'date' => 'required|date', //必須・日付
-            'start_time' => 'required', //必須
-            'end_time' =>  'required', //必須
-    ]);
-        //ログインユーザーに紐づけてDBへ登録
+            'title' => 'required|string|max:255',
+            'date' => 'required|date',
+            'start_time' => 'required',
+            'end_time' => 'required',
+        ]);
+
         auth()->user()->schedules()->create([
             'title' => $request->title,
             'date' => $request->date,
@@ -44,42 +39,36 @@ class ScheduleController extends Controller
 
         ]);
 
-        //保存が完了したらスケジュール一覧画面へリダイレクト
         return redirect()->route('schedules.index');
-    
+
     }
-    
+
     public function show(Schedule $schedule)
     {
-        //セキュリティチェック
-        if($schedule->user_id !== auth()->id()){
+
+        if ($schedule->user_id !== auth()->id()) {
             abort(403);
-
-        $schedule->load(['menuItems' =>function($query){
-            $query->orderBy('sort_order', 'asc');
-        }]);            
-
         }
-        //ビューに選択されたスケジュールデータを渡す
-        return view('schedules.show',[
-            'schedule' => $schedule
+
+        $schedule->load(['menuItems' => function ($query) {
+            $query->orderBy('sort_order', 'asc');
+        }]);
+
+        return view('schedules.show', [
+            'schedule' => $schedule,
         ]);
     }
 
     public function destroy(Schedule $schedule)
     {
-        //セキュリティチェック(他人のスケジュール削除した場合拒否する)
-        if($schedule->user_id !== auth()->id()) {
+        // セキュリティチェック(他人のスケジュール削除した場合拒否する)
+        if ($schedule->user_id !== auth()->id()) {
             abort(403);
         }
 
-        //データベースから削除
         $schedule->delete();
 
-        //削除が完了したらスケジュール一覧画面へリダイレクト
         return redirect()->route('schedules.index');
 
     }
-
-  
 }
