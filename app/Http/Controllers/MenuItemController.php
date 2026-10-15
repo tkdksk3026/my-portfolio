@@ -45,62 +45,6 @@ class MenuItemController extends Controller
 
     }
 
-    public function moveUp(MenuItem $menuItem)
-    {
-        // 現在のメニューアイテムの前にあるメニューアイテムを取得
-        $previousItem = MenuItem::where('schedule_id', $menuItem->schedule_id)
-        
-            ->where('sort_order', '<', $menuItem->sort_order)
-            ->orderBy('sort_order', 'desc')
-            ->first();
-
-        if ($previousItem){
-            
-            $tempOrder = $menuItem->sort_order;
-            $menuItem->sort_order = $previousItem->sort_order;
-            $previousItem->sort_order = $tempOrder;
-
-            $menuItem->save();
-            $previousItem->save();
-        }
-
-        return redirect()->route('schedules.show', $menuItem->schedule_id);
-
-    }
-
-    public function moveDown(MenuItem $menuItem)
-    {
-
-        $nextItem = MenuItem::where('schedule_id', $menuItem->schedule_id)
-            ->where('sort_order', '>', $menuItem->sort_order)
-            ->orderBy('sort_order', 'asc')
-            ->first();
-
-        if($nextItem){
-
-            $temp = $menuItem->sort_order;
-            $menuItem->sort_order = $nextItem->sort_order;
-            $nextItem->sort_order = $temp;
-
-            $menuItem->save();
-            $nextItem->save();
-        }
-
-        return redirect()->route('schedules.show', $menuItem->schedule_id);
-
-    }
-
-    public function destroy(MenuItem $menuItem)
-    {
-        $scheduleId = $menuItem->schedule_id;
-
-        $menuItem->delete();
-
-        return redirect()
-            ->route('schedules.show', $scheduleId)
-            ->with('status', '練習メニューを削除しました！');
-    }
-
     public function toggle(MenuItem $menuItem)
     {
         // メニューアイテムの完了状態を切り替える
@@ -124,6 +68,18 @@ class MenuItemController extends Controller
             }
         }
         return response()->json(['success' => true ] );
+
+    }
+
+    public function destroy(MenuItem $menuItem)
+    {
+        if ($menuItem->schedule->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $menuItem->delete();
+
+        return redirect()->back()->with('status','練習メニューを削除しました！');
     }
 
 }

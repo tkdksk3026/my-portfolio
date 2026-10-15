@@ -14,11 +14,15 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
             <!-- ステータス表示メッセージ -->
-            @if (session('status'))
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-                    <span class="block sm:inline">{{ session('status') }}</span>
-                </div>
-            @endif
+         @if (session('status'))
+    <div x-data="{ show: true }"
+         x-init="setTimeout(() => show = false, 1000)"
+         x-show="show"
+         x-transition.duration.500ms
+         class="bg-pink-100 border border-pink-400 text-pink-600 px-4 py-3 rounded relative mb-4 flex justify-between items-center">
+        <span>{{ session('status') }}</span>
+    </div>
+@endif
 
             <!-- 1. スケジュール概要 & サマリー（アクセサで動的計算） -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
@@ -32,13 +36,13 @@
                         <span class="text-xl font-bold text-blue-700">{{ $schedule->end_time ? $schedule->end_time->format('H:i') : '--:--' }}</span>
                     </div>              
                     <div class="bg-red-50 p-4 rounded-lg">
-                        <span class="text-xs text-red-500 block">残り時間</span>
+                        <span class="text-xs text-red-500 block">予定（残）時間</span>
                         <span class="text-xl font-bold {{ $schedule->remaining_minutes < 0 ? 'text-red-700' : 'text-red-500' }}">
                             {{ $schedule->remaining_minutes }} 分
                         </span>
                     </div>
                     <div class="bg-green-50 p-4 rounded-lg">
-                        <span class="text-xs text-green-600 block">消化時間</span>
+                        <span class="text-xs text-green-600 block">消化（済）時間</span>
                         <span class="text-xl font-bold text-green-600">{{ $schedule->completed_minutes }} 分</span>
                     </div>
                 </div>
@@ -95,7 +99,7 @@
                                             </button>
                                         </form>
 
-                                        <!-- メニュー名（完了している場合は打ち消し線を入れる） -->
+                                        <!-- メニュー名 -->
                                         <div>
                                             <p class="font-bold {{ $item->is_completed ? ' text-gray-400' : 'text-gray-800' }}">
                                                 {{ $item->name }}
