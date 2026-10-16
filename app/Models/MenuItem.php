@@ -14,8 +14,9 @@ class MenuItem extends Model
         'sort_order',
     ];
 
-    public function schedule(){
+    public function schedule()
+    {
 
-    return $this->belongsTo(Schedule::class);
+        return $this->belongsTo(Schedule::class);
     }
 }
