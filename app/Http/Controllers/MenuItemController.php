@@ -8,10 +8,8 @@ use Illuminate\Http\Request;
 
 class MenuItemController extends Controller
 {
-    // 練習アイテムの保存処理
     public function store(Request $request, Schedule $schedule)
     {
-        // バリデーション
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'duration_minutes' => 'required|integer|min:1|max:480',
@@ -19,9 +17,9 @@ class MenuItemController extends Controller
 
         $maxLimit = $schedule->total_schedule_minutes;
         $currentTotal = $schedule->total_minutes;
-        $newFuration = (int) $validated['duration_minutes'];
+        $newDuration = (int) $validated['duration_minutes'];
 
-        if (($currentTotal + $newFuration) > $maxLimit) {
+        if (($currentTotal + $newDuration) > $maxLimit) {
             return back()
                 ->withInput()
                 ->withErrors(['duration_minutes' => '予定時間('.$maxLimit.'分)を超えてしまいます!(残り枠: '.$schedule->available_minutes.'分)']);
@@ -30,7 +28,6 @@ class MenuItemController extends Controller
 
         $maxSortOrder = $schedule->menuItems()->max('sort_order') ?? 0;
 
-        // リレーションを使って、紐づくスケジュールに練習アイテムを保存する
         $schedule->menuItems()->create([
             'name' => $validated['name'],
             'duration_minutes' => $validated['duration_minutes'],
@@ -46,16 +43,14 @@ class MenuItemController extends Controller
 
     public function toggle(MenuItem $menuItem)
     {
-        // メニューアイテムの完了状態を切り替える
         $menuItem->is_completed = ! $menuItem->is_completed;
-        // 変更を保存する
+       
         $menuItem->save();
 
-        // スケジュールの詳細ページにリダイレクトする
         return redirect()->route('schedules.show', $menuItem->schedule_id);
     }
 
-    public function reorder(Request $requesst, Schedule $schedule)
+    public function reorder(Request $request, Schedule $schedule)
     {
         $ids = $request->input('ids');
         if ($ids) {
@@ -80,5 +75,57 @@ class MenuItemController extends Controller
         $menuItem->delete();
 
         return redirect()->back()->with('status', '練習メニューを削除しました！');
+    }
+
+    public function edit(MenuItem $menuItem)
+    {
+        if($menuItem->schedule->user_id !== auth()->id()){
+            abort(403);
+        }
+
+        return view('menu_items.edit' , compact('menuItem'));
+    }
+
+    public function update(Request $request, MenuItem $menuItem)
+    {
+        if($menuItem->schedule->user_id !== auth()->id()){
+            abort(403);
+        }
+
+        $schedule = $menuItem->schedule;
+
+        // ① 編集中のメニュー以外の合計時間を計算
+        $otherItemsDuration = $schedule->menuItems()
+            ->where('id', '!=', $menuItem->id)
+            ->sum('duration_minutes');
+
+        // ② Scheduleモデルのアクセサを使って全体の制限時間を取得
+        $maxLimit = $schedule->total_schedule_minutes;
+
+        // ③ 今回の変更後に予想されるトータル時間
+        $newDuration = (int) $request->input('duration_minutes', 0);
+        $expectedTotal = $otherItemsDuration + $newDuration;
+
+        // ④ 制限時間を超えていないかチェック
+        if($expectedTotal > $maxLimit) {
+            $availableForThis = max(0, $maxLimit - $otherItemsDuration);
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'duration_minutes' => '予定時間('.$maxLimit. '分)を超えてしまいます!(設定可能な上限; '.$availableForThis. '分)'
+                ]);
+        }
+        
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'duration_minutes' => [ 'required', 'integer', 'min:1'],
+        ]);
+
+        $menuItem->update($validated);
+
+        return redirect()
+            ->route('schedules.show',$schedule)
+            ->with('status', '練習メニューを更新しました！');
+
     }
 }
