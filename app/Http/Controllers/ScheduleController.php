@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 
 class ScheduleController extends Controller
 {
+    /**
+     * ログインユーザーのスケジュール一覧を表示
+     */
     public function index()
     {
 
@@ -20,7 +23,10 @@ class ScheduleController extends Controller
             'schedules' => $schedules,
         ]);
     }
-
+    
+    /**
+     * 新規スケジュールを登録
+     */
     public function store(Request $request)
     {
 

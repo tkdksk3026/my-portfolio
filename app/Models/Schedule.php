@@ -33,7 +33,7 @@ class Schedule extends Model
 
     public function menuItems()
     {
-        // メニューアイテムを取得する際に、sort_orderでソートして取得する
+        
         return $this->hasMany(MenuItem::class)->orderBy('sort_order');
     }
 
@@ -69,6 +69,7 @@ class Schedule extends Model
 
     public function getTotalScheduleMinutesAttribute()
     {
+
         if ($this->start_time && $this->end_time) {
 
             $start = Carbon::parse($this->start_time)->setDate(2026, 1, 1);
@@ -92,8 +93,5 @@ class Schedule extends Model
         return $this->total_minutes - $this->completed_minutes;
     }
 
-    public function menuItem()
-    {
-        return $this->hasMany(MenuItem::class)->orderBy('sort_order', 'asc');
-    }
+ 
 }

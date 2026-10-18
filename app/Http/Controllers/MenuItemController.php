@@ -10,9 +10,13 @@ class MenuItemController extends Controller
 {
     public function store(Request $request, Schedule $schedule)
     {
+        if ($schedule->user_id !== auth()->id()) {
+            abort(403);
+        }
+
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'duration_minutes' => 'required|integer|min:1|max:480',
+            'name' => ['required', 'string', 'max:255'],
+            'duration_minutes' => ['required', 'integer', 'min:1', 'max:480'],
         ]);
 
         $maxLimit = $schedule->total_schedule_minutes;
@@ -43,8 +47,13 @@ class MenuItemController extends Controller
 
     public function toggle(MenuItem $menuItem)
     {
+
+        if ($menuItem->schedule->user_id !== auth()->id()) {
+            abort(403);
+        }
+
         $menuItem->is_completed = ! $menuItem->is_completed;
-       
+
         $menuItem->save();
 
         return redirect()->route('schedules.show', $menuItem->schedule_id);
@@ -52,6 +61,11 @@ class MenuItemController extends Controller
 
     public function reorder(Request $request, Schedule $schedule)
     {
+
+        if ($schedule->user_id !== auth()->id()) {
+            abort(403);
+        }
+
         $ids = $request->input('ids');
         if ($ids) {
             foreach ($ids as $index => $id) {
@@ -79,18 +93,22 @@ class MenuItemController extends Controller
 
     public function edit(MenuItem $menuItem)
     {
-        if($menuItem->schedule->user_id !== auth()->id()){
+        if ($menuItem->schedule->user_id !== auth()->id()) {
             abort(403);
         }
 
-        return view('menu_items.edit' , compact('menuItem'));
+        return view('menu_items.edit', compact('menuItem'));
     }
 
     public function update(Request $request, MenuItem $menuItem)
     {
-        if($menuItem->schedule->user_id !== auth()->id()){
+        if ($menuItem->schedule->user_id !== auth()->id()) {
             abort(403);
         }
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'duration_minutes' => ['required', 'integer', 'min:1', 'max:480'],
+        ]);
 
         $schedule = $menuItem->schedule;
 
@@ -107,24 +125,20 @@ class MenuItemController extends Controller
         $expectedTotal = $otherItemsDuration + $newDuration;
 
         // ④ 制限時間を超えていないかチェック
-        if($expectedTotal > $maxLimit) {
+        if ($expectedTotal > $maxLimit) {
             $availableForThis = max(0, $maxLimit - $otherItemsDuration);
+
             return back()
                 ->withInput()
                 ->withErrors([
-                    'duration_minutes' => '予定時間('.$maxLimit. '分)を超えてしまいます!(設定可能な上限; '.$availableForThis. '分)'
+                    'duration_minutes' => '予定時間('.$maxLimit.'分)を超えてしまいます!(設定可能な上限: '.$availableForThis.'分)',
                 ]);
         }
-        
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'duration_minutes' => [ 'required', 'integer', 'min:1'],
-        ]);
 
         $menuItem->update($validated);
 
         return redirect()
-            ->route('schedules.show',$schedule)
+            ->route('schedules.show', $schedule)
             ->with('status', '練習メニューを更新しました！');
 
     }
