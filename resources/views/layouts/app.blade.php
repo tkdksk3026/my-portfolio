@@ -13,6 +13,12 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <!-- ★1. Livewireのスタイルを追加 -->
+        @livewireStyles
+
+        <!-- ★2. ドラッグ＆ドロップ並び替え用のプラグインを追加 -->
+        <script src="https://cdn.jsdelivr.net/gh/livewire/sortable@v1.x.x/dist/livewire-sortable.js" defer></script>
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
@@ -32,5 +38,8 @@
                 {{ $slot }}
             </main>
         </div>
+
+        <!-- ★3. Livewireのスクリプトを追加 -->
+        @livewireScripts
     </body>
 </html>

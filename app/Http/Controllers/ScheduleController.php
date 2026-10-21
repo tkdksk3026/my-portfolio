@@ -67,7 +67,7 @@ class ScheduleController extends Controller
 
     public function destroy(Schedule $schedule)
     {
-        // セキュリティチェック(他人のスケジュール削除した場合拒否する)
+        
         if ($schedule->user_id !== auth()->id()) {
             abort(403);
         }

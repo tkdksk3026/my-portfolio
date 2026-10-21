@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('schedules', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete(); // 作成したユーザー
-            $table->string('title'); // 練習タイトル
-            $table->date('date'); // 練習日
-            $table->time('start_time'); // 練習開始時間
+            $table->string('title'); 
+            $table->date('date'); 
+            $table->time('start_time');
+            $table->time('end_time');
             $table->timestamps();
         });
     }

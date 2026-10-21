@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 
 class MenuItemController extends Controller
 {
+    /**
+     * 練習メニューを新規登録
+     */
     public function store(Request $request, Schedule $schedule)
     {
         if ($schedule->user_id !== auth()->id()) {
@@ -45,6 +48,9 @@ class MenuItemController extends Controller
 
     }
 
+    /**
+     * 完了・未完了の切り替え
+     */
     public function toggle(MenuItem $menuItem)
     {
 
@@ -59,6 +65,9 @@ class MenuItemController extends Controller
         return redirect()->route('schedules.show', $menuItem->schedule_id);
     }
 
+    /**
+     * 並び順の更新（Ajax）
+     */
     public function reorder(Request $request, Schedule $schedule)
     {
 
@@ -80,6 +89,9 @@ class MenuItemController extends Controller
 
     }
 
+    /**
+     * 練習メニューの削除
+     */
     public function destroy(MenuItem $menuItem)
     {
         if ($menuItem->schedule->user_id !== auth()->id()) {
@@ -91,18 +103,26 @@ class MenuItemController extends Controller
         return redirect()->back()->with('status', '練習メニューを削除しました！');
     }
 
+    /**
+     * 編集画面の表示
+     */
     public function edit(MenuItem $menuItem)
     {
         if ($menuItem->schedule->user_id !== auth()->id()) {
             abort(403);
         }
 
-        return view('menu_items.edit', compact('menuItem'));
+        return view('menu_items.edit', ['menuItem' => $menuItem]);
     }
 
+    /**
+     * 練習メニューの更新
+     */
     public function update(Request $request, MenuItem $menuItem)
     {
-        if ($menuItem->schedule->user_id !== auth()->id()) {
+        $schedule = $menuItem->schedule;
+
+        if ($schedule->user_id !== auth()->id()) {
             abort(403);
         }
         $validated = $request->validate([
@@ -110,21 +130,19 @@ class MenuItemController extends Controller
             'duration_minutes' => ['required', 'integer', 'min:1', 'max:480'],
         ]);
 
-        $schedule = $menuItem->schedule;
-
-        // ① 編集中のメニュー以外の合計時間を計算
+        // 編集中のメニュー以外の合計時間を計算
         $otherItemsDuration = $schedule->menuItems()
             ->where('id', '!=', $menuItem->id)
             ->sum('duration_minutes');
 
-        // ② Scheduleモデルのアクセサを使って全体の制限時間を取得
+        // Scheduleモデルのアクセサを使って全体の制限時間を取得
         $maxLimit = $schedule->total_schedule_minutes;
 
-        // ③ 今回の変更後に予想されるトータル時間
+        // 今回の変更後に予想されるトータル時間
         $newDuration = (int) $request->input('duration_minutes', 0);
         $expectedTotal = $otherItemsDuration + $newDuration;
 
-        // ④ 制限時間を超えていないかチェック
+        // 制限時間を超えていないかチェック
         if ($expectedTotal > $maxLimit) {
             $availableForThis = max(0, $maxLimit - $otherItemsDuration);
 
