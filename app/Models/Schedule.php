@@ -23,17 +23,13 @@ class Schedule extends Model
         'end_time' => 'datetime',
     ];
 
-    // リレーション：このスケジュールを作ったユーザー
     public function user()
     {
-
         return $this->belongsTo(User::class);
-
     }
 
     public function menuItems()
-    {
-        
+    {       
         return $this->hasMany(MenuItem::class)->orderBy('sort_order');
     }
 
@@ -54,19 +50,8 @@ class Schedule extends Model
         return $this->menuItems->where('is_completed', true)->sum('duration_minutes');
     }
 
-    public function getAllocatbleMinutesAttribute()
-    {
-        // スケジュールの開始時間と終了時間が設定されている場合にのみ、差分を計算する
-        if ($this->start_time && $this->end_time) {
-            //
-            return $this->start_time->diffInMinutes($this->end_time);
-
-        }
-
-        return 0;
-
-    }
-
+    // スケジュールの総時間（日付を統一して時間・分のみで計算）
+    // $schedule->schedule_minutesで取得できるようにする
     public function getTotalScheduleMinutesAttribute()
     {
 
@@ -81,12 +66,16 @@ class Schedule extends Model
         return 0;
     }
 
+    // 利用可能な残り時間（総スケジュール時間から全メニューの合計時間を引いた値）
+    // $schedule->available_minutesで取得できるようにする
     public function getAvailableMinutesAttribute()
     {
         return max(0, $this->total_schedule_minutes - $this->total_minutes);
 
     }
 
+    // 未完了の残り時間（全メニューの合計時間から完了済みメニューの合計時間を引いた値）
+    //// $schedule->remaining_minutesで取得できるようにする
     public function getRemainingMinutesAttribute()
     {
 

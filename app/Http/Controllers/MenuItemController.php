@@ -66,30 +66,6 @@ class MenuItemController extends Controller
     }
 
     /**
-     * 並び順の更新（Ajax）
-     */
-    public function reorder(Request $request, Schedule $schedule)
-    {
-
-        if ($schedule->user_id !== auth()->id()) {
-            abort(403);
-        }
-
-        $ids = $request->input('ids');
-        if ($ids) {
-            foreach ($ids as $index => $id) {
-                $schedule->menuItems()->where('id', $id)->update([
-                    'sort_order' => $index + 1,
-
-                ]);
-            }
-        }
-
-        return response()->json(['success' => true]);
-
-    }
-
-    /**
      * 練習メニューの削除
      */
     public function destroy(MenuItem $menuItem)

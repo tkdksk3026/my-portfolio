@@ -23,19 +23,25 @@ class ScheduleController extends Controller
             'schedules' => $schedules,
         ]);
     }
-    
+
     /**
      * 新規スケジュールを登録
      */
     public function store(Request $request)
     {
 
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'date' => 'required|date',
-            'start_time' => 'required',
-            'end_time' => 'required',
+        $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'date' => ['required', 'date'],
+            'start_time' => ['required', 'date_format:H:i'],
+            'end_time'  => ['required', 'date_format:H:i', 'after:start_time'],
+        ],[
+            'end_time.after' =>'終了時間は開始時間より後の時間を指定してください',
+
         ]);
+
+
+
 
         auth()->user()->schedules()->create([
             'title' => $request->title,
@@ -49,6 +55,9 @@ class ScheduleController extends Controller
 
     }
 
+    /**
+     * 特定のスケジュール詳細を表示
+     */
     public function show(Schedule $schedule)
     {
 
@@ -65,9 +74,12 @@ class ScheduleController extends Controller
         ]);
     }
 
+    /**
+     * スケジュールを削除
+     */
     public function destroy(Schedule $schedule)
     {
-        
+
         if ($schedule->user_id !== auth()->id()) {
             abort(403);
         }

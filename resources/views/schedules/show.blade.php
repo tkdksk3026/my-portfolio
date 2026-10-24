@@ -1,4 +1,4 @@
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortjs@latest/Sort.min.js"></script>
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
@@ -31,11 +31,13 @@
                     </div>
                     <div class="bg-blue-50 p-4 rounded-lg">
                         <span class="text-xs text-gray-500 block">終了時刻</span>
-                        <span class="text-xl font-bold text-blue-700">{{ $schedule->end_time ? $schedule->end_time->format('H:i') : '--:--' }}</span>
+                        <span
+                            class="text-xl font-bold text-blue-700">{{ $schedule->end_time ? $schedule->end_time->format('H:i') : '--:--' }}</span>
                     </div>
                     <div class="bg-red-50 p-4 rounded-lg">
                         <span class="text-xs text-red-500 block">予定（残）時間</span>
-                        <span class="text-xl font-bold {{ $schedule->remaining_minutes < 0 ? 'text-red-700' : 'text-red-500' }}">
+                        <span
+                            class="text-xl font-bold {{ $schedule->remaining_minutes < 0 ? 'text-red-700' : 'text-red-500' }}">
                             {{ $schedule->remaining_minutes }} 分
                         </span>
                     </div>
@@ -63,17 +65,20 @@
                             <x-input-error class="mt-2" :messages="$errors->get('name')" />
                         </div>
 
-                        <!-- 所要時間（分） -->
-                        <div>
-                            <x-input-label for="duration_minutes" value="所要時間（分）" />
-                            <x-text-input id="duration_minutes" name="duration_minutes" type="number" min="1"
-                                max="480" class="mt-1 block w-full" :value="old('duration_minutes', 15)" required />
-                            @error('duration_minutes')
-                                <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 2000)" x-show="show" x-transition>
-                                    <x-input-error class="mt-2" :messages="$message" />
-                                </div>
-                            @enderror
-                        </div>
+                        <!-- 所要時間（分） -->                  
+                            <div x-data="{ showError: true }">
+                                <x-input-label for="duration_minutes" value="所要時間（分）" />
+                                <!-- @input="showError = false" で、文字を打ち始めた瞬間にエラーを非表示にする -->
+                                <x-text-input id="duration_minutes" name="duration_minutes" type="number"
+                                    min="1" max="480" class="mt-1 block w-full" :value="old('duration_minutes', 15)"
+                                    @input="showError = false" required />
+
+                                @error('duration_minutes')
+                                    <div class="mt-2" x-show="showError" x-transition>
+                                        <x-input-error :messages="$message" />
+                                    </div>
+                                @enderror
+                            </div>
 
                         <div class="pt-2">
                             <x-primary-button class="w-full justify-center">
@@ -86,7 +91,7 @@
                 <!-- 練習メニュー一覧 -->
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 md:col-span-2">
                     <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">練習メニュー 一覧</h3>
-            
+
                     <!-- Livewireコンポーネントを呼び出す -->
                     <livewire:menu-item-reorder :schedule="$schedule" />
                 </div>

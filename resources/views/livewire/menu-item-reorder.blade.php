@@ -4,10 +4,10 @@
             まだ練習メニューが登録されていません。<br>左のフォームから追加してください。
         </p>
     @else
-        <!-- wire:sortable で並び替えのイベントを指定 -->
+        <!-- wire:sort で並び替えのイベントを指定 -->
         <div wire:sortable="updateItemOrder" class="space-y-3">
             @foreach ($menuItems as $item)
-                <!-- wire:sortable.item と wire:key を設定 -->
+                <!-- wire:sort:item と wire:key を設定 -->
                 <div wire:sortable.item="{{ $item->id }}" wire:key="menu-item-{{ $item->id }}"
                     class="flex items-center justify-between p-4 rounded-lg border transition-colors duration-150 cursor-grab hover:bg-blue-50/50 hover:border-blue-300 hover:shadow-md {{ $item->is_completed ? 'bg-gray-50 border-gray-200' : 'bg-white border-gray-300 shadow-sm' }}">
                     

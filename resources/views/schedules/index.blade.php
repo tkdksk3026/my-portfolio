@@ -17,25 +17,35 @@
 
                     <div>
                         <label for="title" class="block text-sm font-medium text-gray-700">練習タイトル</label>
-                        <input type="text" name="title" id="title" required placeholder="例: 10/10  夜 練習"
+                        <input type="text" name="title" id="title" value="{{ old('title') }}" required
+                            placeholder="例: 10/10  夜 練習"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label for="date" class="block text-sm font-medium text-gray-700">練習日</label>
-                            <input type="date" name="date" id="date" required
+                            <input type="date" name="date" value="{{ old('date') }}" id="date" required
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         </div>
                         <div>
                             <label for="start_time" class="block text-sm font-medium text-gray-700">開始時間</label>
-                            <input type="time" name="start_time" id="start_time" required
+                            <input type="time" name="start_time" value="{{ old('start_time') }}" id="start_time"
+                                required
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         </div>
-                        <div>
+                        <div x-data="{ showError: true }">
                             <label for="end_time" class="block text-sm font-medium text-gray-700">終了時間</label>
-                            <input type="time" name="end_time" id="end_time" required
+
+                            <input type="time" name="end_time" value="{{ old('end_time') }}" id="end_time" required
+                                @input="showError = false"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+
+                            @error('end_time')
+                                <div class="mt-1" x-show="showError" x-transition>
+                                    <p style="color: red; font-size: 0.875rem;">{{ $message }}</p>
+                                </div>
+                            @enderror
                         </div>
                     </div>
 
