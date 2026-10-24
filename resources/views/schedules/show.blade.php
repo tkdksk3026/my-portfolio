@@ -1,4 +1,3 @@
-<script src="https://cdn.jsdelivr.net/npm/sortjs@latest/Sort.min.js"></script>
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">

@@ -37,19 +37,9 @@ class ScheduleController extends Controller
             'end_time'  => ['required', 'date_format:H:i', 'after:start_time'],
         ],[
             'end_time.after' =>'終了時間は開始時間より後の時間を指定してください',
-
         ]);
 
-
-
-
-        auth()->user()->schedules()->create([
-            'title' => $request->title,
-            'date' => $request->date,
-            'start_time' => $request->start_time,
-            'end_time' => $request->end_time,
-
-        ]);
+        auth()->user()->schedules()->create($validated);
 
         return redirect()->route('schedules.index');
 

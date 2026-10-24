@@ -8,9 +8,9 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
-            <!-- 1. 新規スケジュール作成フォーム -->
+            <!-- 新規スケジュール作成フォーム -->
             <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">新しい練習予定を追加</h3>
+                <h3 class="text-lg font-medium text-gray-900 mb-4">新しい練習予定 追加</h3>
 
                 <form method="POST" action="{{ route('schedules.store') }}" class="space-y-4">
                     @csrf
@@ -22,6 +22,7 @@
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     </div>
 
+                    {{-- バリデーションエラー時、再入力でエラー表示を消すため Alpine.js で制御 --}}
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4" x-data="{ endError: true }">
                         <div>
                             <label for="date" class="block text-sm font-medium text-gray-700">練習日</label>
@@ -59,9 +60,9 @@
                 </form>
             </div>
 
-            <!-- 2. スケジュール一覧 ＆ 削除機能 -->
+            <!-- スケジュール一覧 ＆ 削除機能 -->
             <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">登録済みの練習予定</h3>
+                <h3 class="text-lg font-medium text-gray-900 mb-4">登録済み 練習予定</h3>
 
                 @if ($schedules->isEmpty())
                     <p class="text-gray-500">登録されている練習予定はありません。</p>

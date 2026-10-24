@@ -26,7 +26,7 @@ class practiceSeeder extends Seeder
 
         $schedule = Schedule::create([
             'user_id' => $user->id,
-            'title' => '10/28 午後 練習',
+            'title' => '10/28 夜 練習',
             'date' => '2026-10-28',
             'start_time' => '19:00',
             'end_time' => '21:00',

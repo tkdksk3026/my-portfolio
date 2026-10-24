@@ -62,7 +62,7 @@ class MenuItemController extends Controller
 
         $menuItem->save();
 
-        return redirect()->route('schedules.show', $menuItem->schedule_id);
+        return redirect()->route('schedules.show', $menuItem->schedule);
     }
 
     /**

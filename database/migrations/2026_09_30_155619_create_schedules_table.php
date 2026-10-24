@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('schedules', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete(); // 作成したユーザー
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('title'); 
             $table->date('date'); 
             $table->time('start_time');
