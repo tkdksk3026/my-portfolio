@@ -68,7 +68,7 @@
                         <!-- 所要時間（分） -->                  
                             <div x-data="{ showError: true }">
                                 <x-input-label for="duration_minutes" value="所要時間（分）" />
-                                <!-- @input="showError = false" で、文字を打ち始めた瞬間にエラーを非表示にする -->
+                               
                                 <x-text-input id="duration_minutes" name="duration_minutes" type="number"
                                     min="1" max="480" class="mt-1 block w-full" :value="old('duration_minutes', 15)"
                                     @input="showError = false" required />
