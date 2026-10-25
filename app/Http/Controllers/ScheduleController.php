@@ -42,7 +42,6 @@ class ScheduleController extends Controller
         auth()->user()->schedules()->create($validated);
 
         return redirect()->route('schedules.index');
-
     }
 
     /**
@@ -77,6 +76,5 @@ class ScheduleController extends Controller
         $schedule->delete();
 
         return redirect()->route('schedules.index');
-
     }
 }

@@ -30,7 +30,6 @@ class MenuItemController extends Controller
             return back()
                 ->withInput()
                 ->withErrors(['duration_minutes' => '予定時間('.$maxLimit.'分)を超えてしまいます!(残り枠: '.$schedule->available_minutes.'分)']);
-
         }
 
         $maxSortOrder = $schedule->menuItems()->max('sort_order') ?? 0;
@@ -45,7 +44,6 @@ class MenuItemController extends Controller
         return redirect()
             ->route('schedules.show', $schedule)
             ->with('status', '練習メニューを追加しました！');
-
     }
 
     /**
@@ -53,13 +51,11 @@ class MenuItemController extends Controller
      */
     public function toggle(MenuItem $menuItem)
     {
-
         if ($menuItem->schedule->user_id !== auth()->id()) {
             abort(403);
         }
 
         $menuItem->is_completed = ! $menuItem->is_completed;
-
         $menuItem->save();
 
         return redirect()->route('schedules.show', $menuItem->schedule);
@@ -101,24 +97,20 @@ class MenuItemController extends Controller
         if ($schedule->user_id !== auth()->id()) {
             abort(403);
         }
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'duration_minutes' => ['required', 'integer', 'min:1', 'max:480'],
         ]);
 
-        // 編集中のメニュー以外の合計時間を計算
         $otherItemsDuration = $schedule->menuItems()
             ->where('id', '!=', $menuItem->id)
             ->sum('duration_minutes');
 
-        // Scheduleモデルのアクセサを使って全体の制限時間を取得
         $maxLimit = $schedule->total_schedule_minutes;
-
-        // 今回の変更後に予想されるトータル時間
         $newDuration = (int) $request->input('duration_minutes', 0);
         $expectedTotal = $otherItemsDuration + $newDuration;
 
-        // 制限時間を超えていないかチェック
         if ($expectedTotal > $maxLimit) {
             $availableForThis = max(0, $maxLimit - $otherItemsDuration);
 
@@ -134,6 +126,5 @@ class MenuItemController extends Controller
         return redirect()
             ->route('schedules.show', $schedule)
             ->with('status', '練習メニューを更新しました！');
-
     }
 }
