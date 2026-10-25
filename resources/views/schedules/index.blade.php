@@ -50,12 +50,12 @@
                             @enderror
                         </div>
                     </div>
-          
+
                     <div>
-                        <button type="submit"
-                            class="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-md shadow-sm hover:bg-indigo-500 focus:outline-none">
-                            スケジュールを作成する
-                        </button>
+<button type="submit"
+    class="inline-flex items-center px-6 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-sm text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+    スケジュールを作成する
+</button>
                     </div>
                 </form>
             </div>
@@ -76,30 +76,45 @@
                                     {{ \Carbon\Carbon::parse($schedule->start_time)->format('H:i') }} ～
                                     {{ \Carbon\Carbon::parse($schedule->end_time)->format('H:i') }}
                                 </div>
-
                                 <div class="flex items-center justify-between">
                                     <a href="{{ route('schedules.show', $schedule) }}"
                                         class="text-xl font-bold text-indigo-600 hover:underline">
                                         {{ $schedule->title }}
                                     </a>
 
-                                    <form method="POST" action="{{ route('schedules.destroy', $schedule) }}"
-                                        onsubmit="return confirm('本当にこのスケジュールを削除しますか？');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                            class="p-2 text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 rounded-lg transition relative -translate-y-1"
-                                            title="削除">
+                                    <!-- 編集・削除ボタンのグループ -->
+                                    <div class="flex items-center space-x-2">
+                                        <!-- 編集ボタン -->
+                                        <a href="{{ route('schedules.edit', $schedule) }}"
+                                            class="p-2 text-blue-500 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg transition"
+                                            title="編集">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
                                                 </path>
                                             </svg>
+                                        </a>
 
-                                    </form>
-                                </div>
-
+                                        <!-- 削除ボタン　-->
+                                        <form method="POST" action="{{ route('schedules.destroy', $schedule) }}"
+                                            onsubmit="return confirm('本当にこのスケジュールを削除しますか？');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                class="p-2 text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 rounded-lg transition"
+                                                title="削除">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                                    </path>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>                            
                             </div>
                         @endforeach
 
