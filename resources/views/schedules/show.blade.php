@@ -24,29 +24,44 @@
             <!-- スケジュール概要 & サマリー（アクセサで動的計算） -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                    <div class="bg-blue-50 p-4 rounded-lg">
-                        <span class="text-xs text-gray-500 block">開始時刻</span>
-                        <span class="text-xl font-bold text-blue-700">{{ $schedule->start_time->format('H:i') }}</span>
+
+                    <div class="bg-blue-50 p-4 rounded-lg flex justify-around items-center">
+                        <div class="flex flex-col items-center">
+                            <span class="text-sm text-gray-500 mb-1">開始時刻</span>
+                            <span
+                                class="text-2xl font-bold text-blue-700">{{ $schedule->start_time->format('H:i') }}</span>
+                        </div>
+                        <div class="flex flex-col justify-end h-full">
+                            <span class="text-xl font-bold text-blue-400 px-1 pb-0.5">～</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <span class="text-sm text-gray-500 mb-1">終了時刻</span>
+                            <span
+                                class="text-2xl font-bold text-blue-700">{{ $schedule->end_time ? $schedule->end_time->format('H:i') : '--:--' }}</span>
+                        </div>
                     </div>
-                    <div class="bg-blue-50 p-4 rounded-lg">
-                        <span class="text-xs text-gray-500 block">終了時刻</span>
-                        <span
-                            class="text-xl font-bold text-blue-700">{{ $schedule->end_time ? $schedule->end_time->format('H:i') : '--:--' }}</span>
+
+                    <div class="bg-orange-50 p-4 rounded-lg flex flex-col justify-center">
+                        <span class="text-base text-orange-500 mb-1">練習時間</span>
+                        <span class="text-2xl font-bold text-orange-600">
+                            {{ $schedule->total_schedule_minutes }} 分
+                        </span>
                     </div>
-                    <div class="bg-red-50 p-4 rounded-lg">
-                        <span class="text-xs text-red-500 block">予定（残）時間</span>
+
+                    <div class="bg-red-50 p-4 rounded-lg flex flex-col justify-center">
+                        <span class="text-base text-red-500 mb-1">残り時間</span>
                         <span
-                            class="text-xl font-bold {{ $schedule->remaining_minutes < 0 ? 'text-red-700' : 'text-red-500' }}">
+                            class="text-2xl font-bold {{ $schedule->remaining_minutes < 0 ? 'text-red-700' : 'text-red-500' }}">
                             {{ $schedule->remaining_minutes }} 分
                         </span>
                     </div>
-                    <div class="bg-green-50 p-4 rounded-lg">
-                        <span class="text-xs text-green-600 block">消化（済）時間</span>
-                        <span class="text-xl font-bold text-green-600">{{ $schedule->completed_minutes }} 分</span>
+
+                    <div class="bg-green-50 p-4 rounded-lg flex flex-col justify-center">
+                        <span class="text-base text-green-600 mb-1">消化時間</span>
+                        <span class="text-2xl font-bold text-green-600">{{ $schedule->completed_minutes }} 分</span>
                     </div>
                 </div>
             </div>
-
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
                 <!-- 練習メニュー追加フォーム  -->
@@ -56,7 +71,6 @@
                     <form action="{{ route('menu_items.store', $schedule) }}" method="POST" class="space-y-4">
                         @csrf
 
-                        <!-- メニュー名 -->
                         <div>
                             <x-input-label for="name" value="メニュー名" />
                             <x-text-input id="name" name="name" type="text" class="mt-1 block w-full"
@@ -64,20 +78,19 @@
                             <x-input-error class="mt-2" :messages="$errors->get('name')" />
                         </div>
 
-                        <!-- 所要時間（分） -->                  
-                            <div x-data="{ showError: true }">
-                                <x-input-label for="duration_minutes" value="所要時間（分）" />
-                               
-                                <x-text-input id="duration_minutes" name="duration_minutes" type="number"
-                                    min="1" max="480" class="mt-1 block w-full" :value="old('duration_minutes', 15)"
-                                    @input="showError = false" required />
+                        <div x-data="{ showError: true }">
+                            <x-input-label for="duration_minutes" value="所要時間（分）" />
 
-                                @error('duration_minutes')
-                                    <div class="mt-2" x-show="showError" x-transition>
-                                        <x-input-error :messages="$message" />
-                                    </div>
-                                @enderror
-                            </div>
+                            <x-text-input id="duration_minutes" name="duration_minutes" type="number" min="1"
+                                max="480" class="mt-1 block w-full" :value="old('duration_minutes', 15)" @input="showError = false"
+                                required />
+
+                            @error('duration_minutes')
+                                <div class="mt-2" x-show="showError" x-transition>
+                                    <x-input-error :messages="$message" />
+                                </div>
+                            @enderror
+                        </div>
 
                         <div class="pt-2">
                             <x-primary-button class="w-full justify-center">
