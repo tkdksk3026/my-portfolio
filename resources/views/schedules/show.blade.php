@@ -4,7 +4,8 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ $schedule->title }} （{{ $schedule->date->format('Y/m/d') }}）
             </h2>
-            <a href="{{ route('schedules.index') }}" class="text-sm text-gray-600 hover:text-gray-900 underline">
+            <a href="{{ route('schedules.index') }}"
+                class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
                 一覧に戻る
             </a>
         </div>
