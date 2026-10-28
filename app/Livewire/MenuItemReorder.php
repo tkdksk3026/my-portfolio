@@ -17,8 +17,11 @@ class MenuItemReorder extends Component
      */
     public function mount(Schedule $schedule)
     {
-        $this->schedule = $schedule;
+        if ($schedule->user_id !== auth()->id()) {
+            abort(403);
+        }
 
+        $this->schedule = $schedule;
     }
 
     /**
@@ -32,7 +35,7 @@ class MenuItemReorder extends Component
 
         // 順番をデータベースに保存
         foreach ($orderedIds as $index => $item) {
-            // 'value' キーからIDを取得する
+            
             $id = $item['value'] ?? null;
 
             if ($id) {

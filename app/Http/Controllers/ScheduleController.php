@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Schedule;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ScheduleController extends Controller
@@ -34,9 +35,9 @@ class ScheduleController extends Controller
             'title' => ['required', 'string', 'max:255'],
             'date' => ['required', 'date'],
             'start_time' => ['required', 'date_format:H:i'],
-            'end_time'  => ['required', 'date_format:H:i', 'after:start_time'],
-        ],[
-            'end_time.after' =>'終了時間は開始時間より後の時間を指定してください',
+            'end_time' => ['required', 'date_format:H:i', 'after:start_time'],
+        ], [
+            'end_time.after' => '終了時間は開始時間より後の時間を指定してください！',
         ]);
 
         auth()->user()->schedules()->create($validated);
@@ -63,57 +64,57 @@ class ScheduleController extends Controller
         ]);
     }
 
-/**
- * スケジュール編集画面を表示
- */
-public function edit(Schedule $schedule)
-{
-    if ($schedule->user_id !== auth()->id()) {
-        abort(403);
-    }
+    /**
+     * スケジュール編集画面を表示
+     */
+    public function edit(Schedule $schedule)
+    {
+        if ($schedule->user_id !== auth()->id()) {
+            abort(403);
+        }
 
-    return view('schedules.edit', [
-        'schedule' => $schedule,
-    ]);
-}
-
-/**
- * スケジュールを更新
- */
-public function update(Request $request, Schedule $schedule)
-{
-    if ($schedule->user_id !== auth()->id()) {
-        abort(403);
-    }
-
-    $validated = $request->validate([
-        'title' => ['required', 'string', 'max:255'],
-        'date' => ['required', 'date'],
-        'start_time' => ['required', 'date_format:H:i'],
-        'end_time'  => ['required', 'date_format:H:i', 'after:start_time'],
-    ],[
-        'end_time.after' => '終了時間は開始時間より後の時間を指定してください',
-    ]);
-
-    $schedule->update($validated);
-
-    $start = \Carbon\Carbon::parse($validated['start_time']);
-    $end = \Carbon\Carbon::parse($validated['end_time']);
-    $newTotalMinutes = $start->diffInMinutes($end);
-
-    $currentMenusTotal = $schedule->total_minutes;
-
-    if($newTotalMinutes < $currentMenusTotal) {
-        return back()
-        ->withInput()
-        ->withErrors([
-            'end_time' => '既存のメニューの合計時間('.$currentMenusTotal.'分)を下回る時間に変更できません!',
+        return view('schedules.edit', [
+            'schedule' => $schedule,
         ]);
     }
 
-    return redirect()->route('schedules.index')
-    ->with('status', 'スケジュール更新しました！');
-}
+    /**
+     * スケジュールを更新
+     */
+    public function update(Request $request, Schedule $schedule)
+    {
+        if ($schedule->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'date' => ['required', 'date'],
+            'start_time' => ['required', 'date_format:H:i'],
+            'end_time' => ['required', 'date_format:H:i', 'after:start_time'],
+        ], [
+            'end_time.after' => '終了時間は開始時間より後の時間を指定してください！',
+        ]);
+
+        // 更新前の段階で時間の整合性をチェック
+        $start = Carbon::parse($validated['start_time']);
+        $end = Carbon::parse($validated['end_time']);
+        $newTotalMinutes = $start->diffInMinutes($end);
+        $currentMenusTotal = $schedule->total_minutes;
+
+        if ($newTotalMinutes < $currentMenusTotal) {
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'end_time' => '既存のメニューの合計時間('.$currentMenusTotal.'分)を下回る時間に変更できません！',
+                ]);
+        }
+
+        $schedule->update($validated);
+
+        return redirect()->route('schedules.index')
+            ->with('status', 'スケジュールを更新しました！');
+    }
 
     /**
      * スケジュールを削除
@@ -127,6 +128,7 @@ public function update(Request $request, Schedule $schedule)
 
         $schedule->delete();
 
-        return redirect()->route('schedules.index');
+        return redirect()->route('schedules.index')
+            ->with('status', 'スケジュールを削除しました！');
     }
 }

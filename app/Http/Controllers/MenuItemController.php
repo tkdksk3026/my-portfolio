@@ -56,6 +56,7 @@ class MenuItemController extends Controller
         }
 
         $menuItem->is_completed = ! $menuItem->is_completed;
+        
         $menuItem->save();
 
         return redirect()->route('schedules.show', $menuItem->schedule);
