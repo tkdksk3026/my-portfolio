@@ -54,10 +54,10 @@ class PracticeSeeder extends Seeder
         ]);
 
         $menus = [
-            ['name' => 'ウォーミングアップ', 'duration_minutes' => 10, 'sort_order' => 1, 'is_completed' => true],
-            ['name' => 'パス', 'duration_minutes' => 20, 'sort_order' => 2, 'is_completed' => true],
-            ['name' => 'シートレシーブ', 'duration_minutes' => 30, 'sort_order' => 3, 'is_completed' => true],
-            ['name' => 'ゲーム', 'duration_minutes' => 60, 'sort_order' => 4, 'is_completed' => true],
+            ['name' => 'ウォーミングアップ', 'duration_minutes' => 10, 'sort_order' => 1, 'is_completed' =>false],
+            ['name' => 'パス', 'duration_minutes' => 20, 'sort_order' => 2, 'is_completed' => false],
+            ['name' => 'シートレシーブ', 'duration_minutes' => 30, 'sort_order' => 3, 'is_completed' => false],
+            ['name' => 'ゲーム', 'duration_minutes' => 60, 'sort_order' => 4, 'is_completed' => false],
 
         ];
 
