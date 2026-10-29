@@ -1,58 +1,112 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 練習スケジュール管理アプリ
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+個人やチームスポーツでの練習スケジュールとメニューを効率的に作成・管理できるWebアプリです。
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## URL
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+https://example.com
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### テスト用アカウント
+- メールアドレス：test@example.com
+- パスワード：password
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 開発の背景
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+趣味でバレーボールしている中で、日々の練習メニューや時間配分の作成・管理に煩わしさを感じていました。
+そうした手間を解消し、予定と時間を手軽に管理できるようにするために本アプリを開発しました。
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+---
 
-## Agentic Development
+## 主な機能
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+- **ユーザー認証**
+  - Laravel Breezeを用いた安全なログイン・ユーザー登録機能
+  - 自分の作成したスケジュール・メニューのみ閲覧・操作可能（セキュリティ保護）
 
-```bash
-composer require laravel/boost --dev
+- **スケジュール管理**
+  - 練習日、タイトル、開始時間、終了時間を指定してスケジュールを作成・編集・削除
+  - スケジュールの時間枠（総枠時間、残り時間、消化時間）をダッシュボード形式で表示
 
-php artisan boost:install
-```
+- **練習メニュー管理**
+  - スケジュールに紐づく練習メニュー（名前、所要時間）の追加・編集・削除
+  - 予定された全体時間を超えないための超過防止バリデーション
+  - 完了・未完了のステータス切り替え
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+- **スムーズな操作性**
+  - ドラッグ＆ドロップによる並び替え（Livewire活用）
+  - 再入力時に自動で消えるエラー表示（Alpine.js活用）
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 使用技術
 
-## Code of Conduct
+- **Backend**: PHP 8.5, Laravel 13.x
+- **Frontend**: Blade Templates, Livewire 4.x, Alpine.js, Tailwind CSS
+- **Database**: MySQL
+- **Environment**: Docker (Laravel Sail), Ubuntu (WSL2)
+- **Infrastructure / Deployment**: Render
+- **Version Control**: Git, GitHub
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## 工夫した点
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+1. **スケジュール時間枠の可視化とリアルタイムな状況把握**
+   - ダッシュボード上に「総枠時間・残り時間・消化時間」を表示し、ユーザーがスケジュールの時間配分を一目で把握できるようにしました。
+2. **非同期通信による直感的な並び替え**
+   - Livewireを活用し練習メニューの並び替えをページリロードなしで直感的に操作・保存できるようにし、操作性を向上させました。
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 苦労した点
+
+1. **時間枠超過を防ぐバリデーション**
+   - **課題:** 練習メニューの合計時間が、スケジュール全体の枠時間を超えて登録できてしまう問題がありました。
+   - **解決:** メニューの合計時間をその場で自動計算してチェックする仕組みを作り、時間が飛び出してしまう設定を未然に防ぐようにしました。
+
+2. **エラー発生時の入力保持と分かりやすい表示**
+   - **課題:** エラー時にフォームの入力値が消え、修正箇所が分かりにくい状態でした。
+   - **解決:** 入力状態の保持と分かりやすいエラー表示に調整し、スムーズに再入力できる画面に改善しました。
+
+---
+
+## データベース設計 (E-R図)
+
+```mermaid
+erDiagram
+    users ||--o{ schedules : "1 : 多"
+    schedules ||--o{ menu_items : "1 : 多"
+
+    users {
+        bigint id PK
+        string name
+        string email UK
+        timestamp email_verified_at
+        string password
+        string remember_token
+        timestamps timestamps
+    }
+
+    schedules {
+        bigint id PK
+        bigint user_id FK
+        string title
+        date date
+        time start_time
+        time end_time
+        timestamps timestamps
+    }
+
+    menu_items {
+        bigint id PK
+        bigint schedule_id FK
+        string name
+        integer duration_minutes
+        boolean is_completed
+        integer sort_order
+        timestamps timestamps
+    }
