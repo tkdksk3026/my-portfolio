@@ -1,4 +1,4 @@
-FROM php:8.3-fpm
+FROM php:8.4-fpm
 
 # 必要なシステムパッケージとPHPの拡張機能をインストール
 RUN apt-get update && apt-get install -y \
