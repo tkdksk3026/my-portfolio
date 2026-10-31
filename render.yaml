@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: practice-schedule-app
+    env: docker
+    envVars:
+      - key: APP_URL
+        value: https://practice-schedule-app.onrender.com
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
