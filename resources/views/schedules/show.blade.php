@@ -83,7 +83,7 @@
                             <x-input-label for="duration_minutes" value="所要時間（分）" />
 
                             <x-text-input id="duration_minutes" name="duration_minutes" type="number" min="1"
-                                max="480" class="mt-1 block w-full" :value="old('duration_minutes', 15)" @input="showError = false"
+                                max="480" class="mt-1 block w-full" :value="old('duration_minutes')" @input="showError = false"
                                 required />
 
                             @error('duration_minutes')

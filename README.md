@@ -6,7 +6,8 @@
 
 ## URL
 
-https://example.com
+- **Webアプリ**: https://my-portfolio-production-cnstwj.laravel.cloud/
+- **GitHub**: https://github.com/tkdksk3026/my-portfolio
 
 ### テスト用アカウント
 - メールアドレス：test@example.com
@@ -52,7 +53,7 @@ https://example.com
 - **Frontend**: Blade Templates, Livewire 4.x, Alpine.js, Tailwind CSS
 - **Database**: MySQL
 - **Environment**: Docker (Laravel Sail), Ubuntu (WSL2)
-- **Infrastructure / Deployment**: Render
+- **Infrastructure / Deployment**: Laravel Cloud
 - **Version Control**: Git, GitHub
 
 ---

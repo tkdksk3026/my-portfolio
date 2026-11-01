@@ -2,6 +2,12 @@
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
+    <div class="mb-4 p-4 text-sm bg-blue-50 border border-blue-200 text-blue-800 rounded-md">
+        <p class="font-bold">【ポートフォリオ閲覧用テストアカウント】</p>
+        <p class="mt-1">メールアドレス：<code>test@example.com</code></p>
+        <p>パスワード：<code>password</code></p>
+    </div>
+
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
