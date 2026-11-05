@@ -30,8 +30,7 @@
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     </div>
 
-                    {{-- バリデーションエラー時、再入力でエラー表示を消すため Alpine.js で制御 --}}
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4" x-data="{ endError: true }">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label for="date" class="block text-sm font-medium text-gray-700">練習日</label>
                             <input type="date" name="date" value="{{ old('date') }}" id="date" required
@@ -41,20 +40,17 @@
                         <div>
                             <label for="start_time" class="block text-sm font-medium text-gray-700">開始時間</label>
                             <input type="time" name="start_time" value="{{ old('start_time') }}" id="start_time"
-                                required @input="endError = false"
+                                required
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         </div>
+
                         <div>
                             <label for="end_time" class="block text-sm font-medium text-gray-700">終了時間</label>
-
                             <input type="time" name="end_time" value="{{ old('end_time') }}" id="end_time" required
-                                @input="endError = false"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
 
                             @error('end_time')
-                                <div class="mt-1" x-show="endError" x-transition>
-                                    <p style="color: red; font-size: 0.875rem;">{{ $message }}</p>
-                                </div>
+                                <p class="mt-1 text-red-600 text-sm">{{ $message }}</p>
                             @enderror
                         </div>
                     </div>
@@ -104,7 +100,7 @@
                                             </svg>
                                         </a>
 
-                                        <!-- 削除ボタン　-->
+                                        <!-- 削除ボタン -->
                                         <form method="POST" action="{{ route('schedules.destroy', $schedule) }}"
                                             onsubmit="return confirm('本当にこのスケジュールを削除しますか？');">
                                             @csrf
